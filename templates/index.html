@@ -7,43 +7,48 @@
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0d1b2a">
-<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
 </head>
+<form method="post">
+    <button type="submit" class="update-button">Update Predictions</button>
+</form>
+
+<h2 class="section-title">Gameweek Predictions</h2>
 <h2 class="section-title">Gameweek Predictions</h2>
 <div class="fixture-list">
-  {% for match in predictions %}
+    {% for match in predictions %}
     <div class="fixture-card">
-      <strong>{{ match.home }}</strong> vs <strong>{{ match.away }}</strong> →
-      <span class="prediction">{{ match.outcome }}</span>
+        <strong>{{ match.home }}</strong> vs <strong>{{ match.away }}</strong> →
+        <span class="prediction">{{ match.outcome }}</span>
     </div>
-  {% endfor %}
+    {% endfor %}
 </div>
 <body>
     <div class="overlay">
         <div class="container">
             <h1>Premier Predictor</h1>
             {% if predictions %}
-                <div class="fixtures">
-                    {% for match in predictions %}
-                        <div class="fixture-card">
-                            <div class="teams">
-                                <span>{{ match.home_team }}</span>
-                                <strong>{{ match.prediction }}</strong>
-                                <span>{{ match.away_team }}</span>
-                            </div>
-                        </div>
-                    {% endfor %}
+            <div class="fixtures">
+                {% for match in predictions %}
+                <div class="fixture-card">
+                    <div class="teams">
+                        <span>{{ match.home }}</span>
+                        <strong>{{ match.outcome }}</strong>
+                        <span>{{ match.away }}</span>
+                    </div>
                 </div>
+                {% endfor %}
+            </div>
             {% endif %}
         </div>
     </div>
 </body>
 <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/static/service-worker.js')
-      .then(reg => console.log('SW registered'))
-      .catch(err => console.error('SW error', err));
-  }
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/static/service-worker.js')
+            .then(reg => console.log('SW registered'))
+            .catch(err => console.error('SW error', err));
+    }
 </script>
 </body>
 </html>
