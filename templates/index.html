@@ -9,10 +9,6 @@
     <meta name="theme-color" content="#0d1b2a">
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
 </head>
-<form method="post">
-    <button type="submit" class="update-button">Update Predictions</button>
-</form>
-
 <h2 class="section-title">Gameweek Predictions</h2>
 <h2 class="section-title">Gameweek Predictions</h2>
 <div class="fixture-list">
@@ -27,19 +23,22 @@
     <div class="overlay">
         <div class="container">
             <h1>Premier Predictor</h1>
-            {% if predictions %}
-            <div class="fixtures">
-                {% for match in predictions %}
-                <div class="fixture-card">
-                    <div class="teams">
-                        <span>{{ match.home }}</span>
-                        <strong>{{ match.outcome }}</strong>
-                        <span>{{ match.away }}</span>
+            <p style="color: lime;">TEMPLATE TEST: Hello Paul!</p>
+            <form method="post">
+                <button type="submit">Update Predictions</button>
+                {% if predictions %}
+                <div class="fixtures">
+                    {% for match in predictions %}
+                    <div class="fixture-card">
+                        <div class="teams">
+                            <span>{{ match.home }}</span>
+                            <strong>{{ match.outcome }}</strong>
+                            <span>{{ match.away }}</span>
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
-            {% endif %}
+                {% endif %}
         </div>
     </div>
 </body>
