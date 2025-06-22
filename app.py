@@ -3,6 +3,7 @@ from flask import Flask, render_template, request
 import pandas as pd
 import joblib
 from statistics import mean
+predictions = []
 
 app = Flask(__name__)
 
@@ -41,15 +42,26 @@ def index():
         if home_team and away_team:
             if home_team != away_team:
                 try:
-                    prediction = random.choice(["Home Win", "Draw", "Away Win"])
+                    outcome = random.choice(["Home Win", "Draw", "Away Win"])
                 except Exception as e:
-                    prediction = f"Prediction error: {str(e)}"
+                    outcome = f"Prediction error: {str(e)}"
             else:
-                prediction = "Please select two different teams."
-        else:
-            prediction = "Please select both teams."
-    else:
-        prediction = ""  # Default if no form submitted
+                outcome = "Please select two different teams."
+
+            predictions.append({
+                "home": home_team,
+                "away": away_team,
+                "outcome": outcome
+            })
+
+    return render_template('index.html', teams=teams, predictions=predictions)
+
+        # Store the result in the predictions list
+        predictions.append({
+            "home": home_team,
+            "away": away_team,
+            "outcome": outcome
+        })
 
     print("→ Template data:", teams, prediction)
     print("✔ Rendering index.html now")
