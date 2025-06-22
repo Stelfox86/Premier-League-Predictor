@@ -56,3 +56,23 @@ h1 {
     font-size: 1.1rem;
   }
 }
+.fixture-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  font-size: 1.1rem;
+}
+
+.section-title {
+  margin-top: 20px;
+  font-size: 1.4rem;
+  text-align: center;
+  color: #ffffff;
+}
+
+.prediction {
+  font-weight: bold;
+  color: #00ffcc;
+}
