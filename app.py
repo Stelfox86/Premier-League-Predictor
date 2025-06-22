@@ -30,57 +30,46 @@ def predict_winner(home, away):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    # --- Custom dropdown prediction logic ---
-    teams = sorted(set(history['HomeTeam']).union(set(history['AwayTeam'])))
-    prediction = ""
+    if request.method == 'POST':
+        # Your form processing logic here
+        if 'home_team' in request.form and 'away_team' in request.form:
+            # handle manual prediction form
+
+    print("Rendering index.html now")
+    return render_template('index.html', teams=teams, prediction=prediction, predictions=predictions))
 
     if request.method == 'POST':
-        home = request.form['home']
-        away = request.form['away']
-        if home != away:
+    # 1. Manual team prediction form
+    if 'home_team' in request.form and 'away_team' in request.form:
+        home_team = request.form['home_team']
+        away_team = request.form['away_team']
+        if home_team != away_team:
             try:
-                h_enc = le_home.transform([home])[0]
-                a_enc = le_away.transform([away])[0]
-                h_stats = get_recent_averages(home, True)
-                a_stats = get_recent_averages(away, False)
-                blended = [(h + a) / 2 for h, a in zip(h_stats, a_stats)]
-                input_row = pd.DataFrame([[h_enc, a_enc] + blended],
-                                         columns=['HomeTeam', 'AwayTeam'] + stat_cols)
-                pred = model.predict(input_row)[0]
-                result_map = {0: "Home Win 🏠", 1: "Draw 🤝", 2: "Away Win 🚗"}
-                prediction = result_map[pred]
+                # Swap in your model here if ready
+                prediction = random.choice(["Home Win 🏠", "Draw 🤝", "Away Win 🚗"])
             except Exception as e:
-                prediction = f"Error: {e}"
+                prediction = f"Prediction error: {str(e)}"
+        else:
+            prediction = "Please select two different teams."
 
-    # --- Fixture prediction logic (static for now) ---
-    predictions = []
-for match in fixtures:
-    try:
-        outcome = predict_winner(match['home'], match['away'])
-    except Exception as e:
-        print("Prediction error:", e)
-        outcome = "Prediction error"
+    # 2. Update Predictions button
+    else:
+        fixtures = [
+            {'home': 'Arsenal', 'away': 'Chelsea'},
+            {'home': 'Man Utd', 'away': 'Burnley'},
+            {'home': 'Brentford', 'away': 'Wolves'}
+        ]
 
-    predictions.append({
-        'home': match['home'],
-        'away': match['away'],
-        'outcome': outcome
-    })
-
-    predictions = []
-    for match in fixtures:
-        try:
-            outcome = predict_winner(match['home'], match['away'])  # Your model-based function
-        except:
-            outcome = "Prediction error"
-        predictions.append({
-            'home': match['home'],
-            'away': match['away'],
-            'outcome': outcome
-        })
-
+        predictions = []
+        for match in fixtures:
+            outcome = predict_winner(match['home'], match['away'])
+            predictions.append({
+                'home': match['home'],
+                'away': match['away'],
+                'outcome': outcome
+            })
+            print("✔ Rendering index.html now")
     return render_template('index.html', teams=teams, prediction=prediction, predictions=predictions)
-import os
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))
