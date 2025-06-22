@@ -57,7 +57,7 @@ def index():
     return render_template('index.html', teams=teams, predictions=predictions)
 
         # Store the result in the predictions list
-        predictions.append({
+    predictions.append({
             "home": home_team,
             "away": away_team,
             "outcome": outcome
