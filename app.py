@@ -28,15 +28,26 @@ def predict_winner(home, away):
     import random
     return random.choice(["Home Win 🏠", "Draw ⚖️", "Away Win 🚗"])
 
-    @app.route('/', methods=['GET', 'POST'])
-    def index():
-        if request.method == 'POST':
-        # Your form processing logic here
-            if 'home_team' in request.form and 'away_team' in request.form:
-            # handle manual prediction form
-
+@app.route('/', methods=['GET', 'POST'])
+def index():
     print("Rendering index.html now")
-    return render_template('index.html', teams=teams, prediction=prediction, predictions=predictions))
+
+    # 1. Manual team prediction form
+    if 'home_team' in request.form and 'away_team' in request.form:
+        home_team = request.form['home_team']
+        away_team = request.form['away_team']
+        if home_team != away_team:
+            try:
+                prediction = random.choice(["Home Win", "Draw", "Away Win"])
+            except Exception as e:
+                prediction = f"Prediction error: {str(e)}"
+        else:
+            prediction = "Please select two different teams."
+    else:
+        prediction = ""  # Default prediction if no form submitted
+
+    # Make sure 'teams' and 'predictions' are set before this
+    return render_template('index.html', teams=teams, prediction=prediction, predictions=predictions)
     # 1. Manual team prediction form
     if 'home_team' in request.form and 'away_team' in request.form:
         home_team = request.form['home_team']
