@@ -37,8 +37,6 @@ def predict_winner(home, away):
 
     print("Rendering index.html now")
     return render_template('index.html', teams=teams, prediction=prediction, predictions=predictions))
-
-    if request.method == 'POST':
     # 1. Manual team prediction form
     if 'home_team' in request.form and 'away_team' in request.form:
         home_team = request.form['home_team']
