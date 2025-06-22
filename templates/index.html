@@ -9,6 +9,15 @@
     <meta name="theme-color" content="#0d1b2a">
 <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
 </head>
+<h2 class="section-title">Gameweek Predictions</h2>
+<div class="fixture-list">
+  {% for match in predictions %}
+    <div class="fixture-card">
+      <strong>{{ match.home }}</strong> vs <strong>{{ match.away }}</strong> →
+      <span class="prediction">{{ match.outcome }}</span>
+    </div>
+  {% endfor %}
+</div>
 <body>
     <div class="overlay">
         <div class="container">
@@ -29,4 +38,13 @@
         </div>
     </div>
 </body>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/service-worker.js')
+      .then(reg => console.log('SW registered'))
+      .catch(err => console.error('SW error', err));
+  }
+</script>
+</body>
+</html>
 </html>
