@@ -47,6 +47,7 @@ def index():
         prediction = ""  # Default prediction if no form submitted
     print("→ Template data:", teams, prediction, predictions)
     # Make sure 'teams' and 'predictions' are set before this
+    print("✔ Rendering index.html now")
     return render_template('index.html', teams=teams, prediction=prediction, predictions=predictions)
     # 1. Manual team prediction form
     if 'home_team' in request.form and 'away_team' in request.form:
@@ -77,7 +78,6 @@ def index():
                 'away': match['away'],
                 'outcome': outcome
             })
-            print("✔ Rendering index.html now")
     return render_template('index.html', teams=teams, prediction=prediction, predictions=predictions)
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))
