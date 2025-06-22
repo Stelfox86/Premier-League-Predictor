@@ -28,11 +28,11 @@ def predict_winner(home, away):
     import random
     return random.choice(["Home Win 🏠", "Draw ⚖️", "Away Win 🚗"])
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
+    @app.route('/', methods=['GET', 'POST'])
+    def index():
+        if request.method == 'POST':
         # Your form processing logic here
-        if 'home_team' in request.form and 'away_team' in request.form:
+            if 'home_team' in request.form and 'away_team' in request.form:
             # handle manual prediction form
 
     print("Rendering index.html now")
