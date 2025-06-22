@@ -53,11 +53,19 @@ def index():
                 prediction = f"Error: {e}"
 
     # --- Fixture prediction logic (static for now) ---
-    fixtures = [
-        {'home': 'Arsenal', 'away': 'Chelsea'},
-        {'home': 'Man Utd', 'away': 'Burnley'},
-        {'home': 'Brentford', 'away': 'Wolves'}
-    ]
+    predictions = []
+for match in fixtures:
+    try:
+        outcome = predict_winner(match['home'], match['away'])
+    except Exception as e:
+        print("Prediction error:", e)
+        outcome = "Prediction error"
+
+    predictions.append({
+        'home': match['home'],
+        'away': match['away'],
+        'outcome': outcome
+    })
 
     predictions = []
     for match in fixtures:
