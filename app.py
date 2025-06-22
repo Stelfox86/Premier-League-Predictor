@@ -30,9 +30,6 @@ def predict_winner(home, away):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    print("Rendering index.html now")
-
-    # 1. Manual team prediction form
     if 'home_team' in request.form and 'away_team' in request.form:
         home_team = request.form['home_team']
         away_team = request.form['away_team']
@@ -44,9 +41,9 @@ def index():
         else:
             prediction = "Please select two different teams."
     else:
-        prediction = ""  # Default prediction if no form submitted
+        prediction = ""  # Default if no form submitted
+
     print("→ Template data:", teams, prediction, predictions)
-    # Make sure 'teams' and 'predictions' are set before this
     print("✔ Rendering index.html now")
     return render_template('index.html', teams=teams, prediction=prediction, predictions=predictions)
     # 1. Manual team prediction form
