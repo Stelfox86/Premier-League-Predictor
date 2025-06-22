@@ -24,11 +24,16 @@ def get_recent_averages(team, is_home):
     else:
         games = history[history['AwayTeam'] == team].tail(RECENT_MATCHES)
     return [mean(games[col].fillna(0)) if col in games else 0 for col in stat_cols]
+def predict_winner(home, away):
+    import random
+    return random.choice(["Home Win 🏠", "Draw ⚖️", "Away Win 🚗"])
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    # --- Custom dropdown prediction logic ---
     teams = sorted(set(history['HomeTeam']).union(set(history['AwayTeam'])))
     prediction = ""
+
     if request.method == 'POST':
         home = request.form['home']
         away = request.form['away']
@@ -46,7 +51,27 @@ def index():
                 prediction = result_map[pred]
             except Exception as e:
                 prediction = f"Error: {e}"
-    return render_template('index.html', teams=teams, prediction=prediction)
+
+    # --- Fixture prediction logic (static for now) ---
+    fixtures = [
+        {'home': 'Arsenal', 'away': 'Chelsea'},
+        {'home': 'Man Utd', 'away': 'Burnley'},
+        {'home': 'Brentford', 'away': 'Wolves'}
+    ]
+
+    predictions = []
+    for match in fixtures:
+        try:
+            outcome = predict_winner(match['home'], match['away'])  # Your model-based function
+        except:
+            outcome = "Prediction error"
+        predictions.append({
+            'home': match['home'],
+            'away': match['away'],
+            'outcome': outcome
+        })
+
+    return render_template('index.html', teams=teams, prediction=prediction, predictions=predictions)
 import os
 
 if __name__ == '__main__':
