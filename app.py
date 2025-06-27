@@ -33,12 +33,33 @@ def get_teams():
     import pandas as pd
     df = pd.read_csv('E0.csv')  # or your actual data file
     return df['HomeTeam'].unique().tolist()
+import requests
+
+API_KEY = 'YOUR_API_KEY_7009c6efb7891248f9d5ba861bf9eb45'
+
 def get_upcoming_fixtures():
-    return [
-        {"home": "Arsenal", "away": "Chelsea", "date": "2025-08-10"},
-        {"home": "Liverpool", "away": "Man City", "date": "2025-08-11"},
-        {"home": "Man United", "away": "Tottenham", "date": "2025-08-12"},
-    ]
+    url = "https://v3.football.api-sports.io/fixtures"
+    params = {
+        "league": 39,         # Premier League
+        "season": 2024,       # Use correct season
+        "next": 10            # Number of fixtures
+    }
+    headers = {
+        "x-apisports-key": API_KEY
+    }
+
+    response = requests.get(url, headers=headers, params=params)
+    data = response.json()
+
+    fixtures = []
+    for match in data['response']:
+        home = match['teams']['home']['name']
+        away = match['teams']['away']['name']
+        date = match['fixture']['date'][:10]  # Trim to YYYY-MM-DD
+        fixtures.append({"home": home, "away": away, "date": date})
+
+    return fixtures
+
 
 
 
