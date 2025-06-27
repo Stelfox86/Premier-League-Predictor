@@ -1,7 +1,6 @@
-requests
-beautifulsoup4
-requests
 Flask
+requests
 pandas
-scikit-learn
 joblib
+scikit-learn
+beautifulsoup4
