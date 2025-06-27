@@ -1,3 +1,4 @@
+requests
 Flask
 pandas
 scikit-learn
