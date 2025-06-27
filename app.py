@@ -38,35 +38,27 @@ def get_teams():
     df = pd.read_csv('E0.csv')  # or your actual data file
     return df['HomeTeam'].unique().tolist()
 import requests
+from bs4 import BeautifulSoup
 
 def get_upcoming_fixtures():
-    url = "https://v3.football.api-sports.io/fixtures"
-    params = {
-        "league": 39,     # Premier League
-        "season": 2025,
-        "from": "2025-08-10",
-        "to": "2025-08-25"
+    url = "https://www.bbc.com/sport/football/premier-league/scores-fixtures"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
 
-
-    }
-    headers = {
-    "x-apisports-key": API_KEY
-}
-
-    logging.info(f"API KEY BEING USED: {API_KEY}")
-
-    response = requests.get(url, headers=headers, params=params)
-    
-    logging.info(f"Raw API response: {response.text}")  # 🔍 This line is key
-    
-    data = response.json()
     fixtures = []
+    games = soup.find_all("li", class_="gs-o-list-ui__item gs-u-pb++ gel-long-primer gs-u-pt+")
 
-    for match in data.get('response', []):
-        home = match['teams']['home']['name']
-        away = match['teams']['away']['name']
-        date = match['fixture']['date'][:10]
-        fixtures.append({"home": home, "away": away, "date": date})
+    for game in games[:5]:  # Get first 5 fixtures
+        teams = game.find_all("span", class_="gs-u-display-none gs-u-display-block@m qa-full-team-name")
+        date = game.find("span", class_="sp-c-date__text")
+        if len(teams) == 2:
+            home = teams[0].text.strip()
+            away = teams[1].text.strip()
+            fixtures.append({
+                "home": home,
+                "away": away,
+                "date": date.text.strip() if date else "Upcoming"
+            })
 
     return fixtures
 
