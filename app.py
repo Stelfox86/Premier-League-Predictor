@@ -39,28 +39,45 @@ def get_teams():
     return df['HomeTeam'].unique().tolist()
 import requests
 from bs4 import BeautifulSoup
+import logging
 
 def get_upcoming_fixtures():
     url = "https://www.bbc.com/sport/football/premier-league/scores-fixtures"
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    }
 
-    fixtures = []
-    games = soup.find_all("li", class_="gs-o-list-ui__item gs-u-pb++ gel-long-primer gs-u-pt+")
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-    for game in games[:5]:  # Get first 5 fixtures
-        teams = game.find_all("span", class_="gs-u-display-none gs-u-display-block@m qa-full-team-name")
-        date = game.find("span", class_="sp-c-date__text")
-        if len(teams) == 2:
-            home = teams[0].text.strip()
-            away = teams[1].text.strip()
-            fixtures.append({
-                "home": home,
-                "away": away,
-                "date": date.text.strip() if date else "Upcoming"
-            })
+        fixtures = []
+        games = soup.find_all("li", class_="gs-o-list-ui__item gs-u-pb++ gel-long-primer gs-u-pt+")
 
-    return fixtures
+        logging.info(f"Games found: {len(games)}")
+
+        for game in games[:5]:  # First 5 upcoming
+            teams = game.find_all("span", class_="gs-u-display-none gs-u-display-block@m qa-full-team-name")
+            date = game.find("span", class_="sp-c-date__text")
+
+            if teams and len(teams) == 2:
+                home = teams[0].text.strip()
+                away = teams[1].text.strip()
+                match_date = date.text.strip() if date else "Upcoming"
+
+                fixtures.append({
+                    "home": home,
+                    "away": away,
+                    "date": match_date
+                })
+
+        logging.info(f"Fixtures pulled: {fixtures}")
+        return fixtures
+
+    except Exception as e:
+        logging.error(f"Error scraping BBC fixtures: {e}")
+        return []
+
 
 
 
