@@ -30,29 +30,16 @@ def predict_winner(home, away):
     import random
     return random.choice(["Home Win 🏠", "Draw ⚖️", "Away Win 🚗"])
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def index():
-    import random  # Just in case it's missing
-    teams = ['Arsenal', 'Chelsea', 'Liverpool', 'Manchester City']
+    teams = get_teams()  # example function
+    predictions = []
 
-    if request.method == 'POST':
-        home_team = request.form.get('home_team')
-        away_team = request.form.get('away_team')
-
-        if home_team and away_team:
-            if home_team != away_team:
-                try:
-                    outcome = random.choice(["Home Win", "Draw", "Away Win"])
-                except Exception as e:
-                    outcome = f"Prediction error: {str(e)}"
-            else:
-                outcome = "Please select two different teams."
-
-            predictions.append({
-                "home": home_team,
-                "away": away_team,
-                "outcome": outcome
-            })
+    try:
+        predictions = run_predictions(teams)  # or however you're calculating them
+    except Exception as e:
+        print(f"Error generating predictions: {e}")
+        # Optionally log the error or show a message in the UI
 
     return render_template('index.html', teams=teams, predictions=predictions)
 
