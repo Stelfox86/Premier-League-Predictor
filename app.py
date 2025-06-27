@@ -68,10 +68,12 @@ def index():
     predictions = []
 
     if request.method == 'POST':
-        print("POST request received — calling fixture API")
-    fixtures = get_upcoming_fixtures()
-    print("Fixtures pulled:", fixtures)
-    for match in fixtures:
+        logging.info("POST request received 🚀 calling fixture API")
+
+        fixtures = get_upcoming_fixtures()
+        logging.info(f"Fixtures pulled: {fixtures}")
+
+        for match in fixtures:
             outcome = predict_winner(match['home'], match['away'])
             predictions.append({
                 "home": match['home'],
@@ -79,7 +81,9 @@ def index():
                 "outcome": outcome,
                 "date": match['date']
             })
+
     return render_template('index.html', predictions=predictions)
+
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))
