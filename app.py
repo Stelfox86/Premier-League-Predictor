@@ -43,8 +43,12 @@ import logging
 
 def get_upcoming_fixtures():
     url = "https://www.bbc.com/sport/football/premier-league/scores-fixtures"
-    response = requests.get(url)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+    }
+    response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
+
 
     fixtures = []
 
