@@ -37,7 +37,7 @@ def get_teams():
     import pandas as pd
     df = pd.read_csv('E0.csv')  # or your actual data file
     return df['HomeTeam'].unique().tolist()
-iimport requests
+import requests
 from bs4 import BeautifulSoup
 import logging
 
