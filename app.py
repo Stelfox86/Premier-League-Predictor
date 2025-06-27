@@ -39,8 +39,6 @@ def get_teams():
     return df['HomeTeam'].unique().tolist()
 import requests
 
-API_KEY = 'YOUR_API_KEY_7009c6efb7891248f9d5ba861bf9eb45'
-
 def get_upcoming_fixtures():
     url = "https://v3.football.api-sports.io/fixtures"
     params = {
@@ -52,6 +50,7 @@ def get_upcoming_fixtures():
     "x-apisports-key": API_KEY
 }
 
+    logging.info(f"API KEY BEING USED: {API_KEY}")
 
     response = requests.get(url, headers=headers, params=params)
     
