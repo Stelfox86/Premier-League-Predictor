@@ -43,9 +43,10 @@ def get_upcoming_fixtures():
     url = "https://v3.football.api-sports.io/fixtures"
     params = {
         "league": 39,     # Premier League
-        "season": 2023,
-        "from": "2023-08-01",
-        "to": "2023-08-20"
+        "season": 2025,
+        "from": "2025-08-10",
+        "to": "2025-08-25"
+
 
     }
     headers = {
