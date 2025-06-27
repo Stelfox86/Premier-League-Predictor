@@ -33,61 +33,27 @@ def get_teams():
     import pandas as pd
     df = pd.read_csv('E0.csv')  # or your actual data file
     return df['HomeTeam'].unique().tolist()
+def get_upcoming_fixtures():
+    return [
+        {"home": "Arsenal", "away": "Chelsea", "date": "2025-08-10"},
+        {"home": "Liverpool", "away": "Man City", "date": "2025-08-11"},
+        {"home": "Man United", "away": "Tottenham", "date": "2025-08-12"},
+    ]
 
 
-@app.route('/')
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    teams = get_teams()  # example function
     predictions = []
 
-    try:
-        predictions = run_predictions(teams)  # or however you're calculating them
-    except Exception as e:
-        print(f"Error generating predictions: {e}")
-        # Optionally log the error or show a message in the UI
-
-    return render_template('index.html', teams=teams, predictions=predictions)
-
-        # Store the result in the predictions list
-    predictions.append({
-            "home": home_team,
-            "away": away_team,
-            "outcome": outcome
-        })
-
-    print("→ Template data:", teams, prediction)
-    print("✔ Rendering index.html now")
-    return render_template('index.html', teams=teams, prediction=prediction, predictions=[])
-    # 1. Manual team prediction form
-    if 'home_team' in request.form and 'away_team' in request.form:
-        home_team = request.form['home_team']
-        away_team = request.form['away_team']
-        if home_team != away_team:
-            try:
-                # Swap in your model here if ready
-                prediction = random.choice(["Home Win 🏠", "Draw 🤝", "Away Win 🚗"])
-            except Exception as e:
-                prediction = f"Prediction error: {str(e)}"
-        else:
-            prediction = "Please select two different teams."
-
-    # 2. Update Predictions button
-    else:
-        fixtures = [
-            {'home': 'Arsenal', 'away': 'Chelsea'},
-            {'home': 'Man Utd', 'away': 'Burnley'},
-            {'home': 'Brentford', 'away': 'Wolves'}
-        ]
-
-        predictions = []
+    if request.method == 'POST':
+        fixtures = get_upcoming_fixtures()  # We'll define this next
         for match in fixtures:
             outcome = predict_winner(match['home'], match['away'])
             predictions.append({
-                'home': match['home'],
-                'away': match['away'],
-                'outcome': outcome
+                "home": match['home'],
+                "away": match['away'],
+                "outcome": outcome,
+                "date": match['date']
             })
-    return render_template('index.html', teams=teams, prediction=prediction, predictions=predictions)
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 10000))
-    app.run(host='0.0.0.0', port=port)
+    return render_template('index.html', predictions=predictions)

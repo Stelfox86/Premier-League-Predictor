@@ -23,21 +23,22 @@
     <div class="overlay">
         <div class="container">
             <h1>Premier Predictor</h1>
-            <form method="post">
+            <form method="POST">
                 <button type="submit">Update Predictions</button>
-                {% if predictions %}
-                <div class="fixtures">
-                    {% for match in predictions %}
-                    <div class="fixture-card">
-                        <div class="teams">
-                            <span>{{ match.home }}</span>
-                            <strong>{{ match.outcome }}</strong>
-                            <span>{{ match.away }}</span>
-                        </div>
+            </form>
+            {% if predictions %}
+            <div class="fixtures">
+                {% for match in predictions %}
+                <div class="fixture-card">
+                    <div class="teams">
+                        <span>{{ match.home }}</span>
+                        <strong>{{ match.outcome }}</strong>
+                        <span>{{ match.away }}</span>
                     </div>
-                    {% endfor %}
                 </div>
-                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
     </div>
 </body>
