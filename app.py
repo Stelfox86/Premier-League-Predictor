@@ -37,30 +37,41 @@ def get_teams():
     import pandas as pd
     df = pd.read_csv('E0.csv')  # or your actual data file
     return df['HomeTeam'].unique().tolist()
-import requests
+iimport requests
 from bs4 import BeautifulSoup
+import logging
 
 def get_upcoming_fixtures():
-    url = "https://www.skysports.com/premier-league-fixtures"
+    url = "https://www.bbc.com/sport/football/premier-league/scores-fixtures"
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
 
     fixtures = []
-    match_sections = soup.find_all("div", class_="fixres__item")
 
-    for match in match_sections[:5]:  # Limit to first 5 upcoming fixtures
-        home_team = match.find("span", class_="matches__item-col matches__participant--side1")
-        away_team = match.find("span", class_="matches__item-col matches__participant--side2")
-        date = match.find_previous("h4", class_="fixres__header2")  # Grabs date above fixture block
+    # Each day section
+    days = soup.find_all('div', class_='qa-match-block')
 
-        if home_team and away_team:
-            fixtures.append({
-                "home": home_team.text.strip(),
-                "away": away_team.text.strip(),
-                "date": date.text.strip() if date else "Upcoming"
-            })
+    for day in days:
+        date_tag = day.find('h3')
+        date = date_tag.text.strip() if date_tag else "Upcoming"
 
+        games = day.find_all('li', class_='gs-o-list-ui__item')
+
+        for game in games:
+            teams = game.find_all('span', class_='gs-u-display-none gs-u-display-block@m qa-full-team-name')
+            if len(teams) == 2:
+                home = teams[0].text.strip()
+                away = teams[1].text.strip()
+                fixtures.append({
+                    "home": home,
+                    "away": away,
+                    "date": date
+                })
+
+    logging.info(f"Fixtures found: {len(fixtures)}")
     return fixtures
+
+
 
 
 
