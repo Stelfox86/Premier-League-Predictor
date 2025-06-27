@@ -1,9 +1,12 @@
+import logging
 import os # ✅ os module imported for Render deploy
 from flask import Flask, render_template, request
 import pandas as pd
 import joblib
 from statistics import mean
 predictions = []
+logging.basicConfig(level=logging.INFO)
+
 
 app = Flask(__name__)
 
