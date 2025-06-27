@@ -6,6 +6,7 @@ import joblib
 from statistics import mean
 predictions = []
 logging.basicConfig(level=logging.INFO)
+API_KEY = os.getenv("API_FOOTBALL_KEY")
 
 
 app = Flask(__name__)
@@ -48,8 +49,9 @@ def get_upcoming_fixtures():
         "next": 5         # Number of fixtures
     }
     headers = {
-        "x-apisports-key": API_KEY
-    }
+    "x-apisports-key": API_KEY
+}
+
 
     response = requests.get(url, headers=headers, params=params)
     
