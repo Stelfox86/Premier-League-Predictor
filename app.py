@@ -68,8 +68,10 @@ def index():
     predictions = []
 
     if request.method == 'POST':
-        fixtures = get_upcoming_fixtures()  # We'll define this next
-        for match in fixtures:
+        print("POST request received — calling fixture API")
+    fixtures = get_upcoming_fixtures()
+    print("Fixtures pulled:", fixtures)
+    for match in fixtures:
             outcome = predict_winner(match['home'], match['away'])
             predictions.append({
                 "home": match['home'],
