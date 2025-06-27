@@ -43,25 +43,29 @@ API_KEY = 'YOUR_API_KEY_7009c6efb7891248f9d5ba861bf9eb45'
 def get_upcoming_fixtures():
     url = "https://v3.football.api-sports.io/fixtures"
     params = {
-        "league": 39,         # Premier League
-        "season": 2024,       # Use correct season
-        "next": 10            # Number of fixtures
+        "league": 39,     # Premier League
+        "season": 2024,   # Make sure this is a valid season
+        "next": 5         # Number of fixtures
     }
     headers = {
         "x-apisports-key": API_KEY
     }
 
     response = requests.get(url, headers=headers, params=params)
+    
+    logging.info(f"Raw API response: {response.text}")  # 🔍 This line is key
+    
     data = response.json()
-
     fixtures = []
-    for match in data['response']:
+
+    for match in data.get('response', []):
         home = match['teams']['home']['name']
         away = match['teams']['away']['name']
-        date = match['fixture']['date'][:10]  # Trim to YYYY-MM-DD
+        date = match['fixture']['date'][:10]
         fixtures.append({"home": home, "away": away, "date": date})
 
     return fixtures
+
 
 
 
