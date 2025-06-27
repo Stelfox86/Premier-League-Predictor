@@ -43,8 +43,10 @@ def get_upcoming_fixtures():
     url = "https://v3.football.api-sports.io/fixtures"
     params = {
         "league": 39,     # Premier League
-        "season": 2023,   # Make sure this is a valid season
-        "next": 5         # Number of fixtures
+        "season": 2023,
+        "from": "2023-08-01",
+        "to": "2023-08-20"
+
     }
     headers = {
     "x-apisports-key": API_KEY
