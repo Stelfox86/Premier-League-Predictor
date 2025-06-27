@@ -29,6 +29,11 @@ def get_recent_averages(team, is_home):
 def predict_winner(home, away):
     import random
     return random.choice(["Home Win 🏠", "Draw ⚖️", "Away Win 🚗"])
+def get_teams():
+    import pandas as pd
+    df = pd.read_csv('E0.csv')  # or your actual data file
+    return df['HomeTeam'].unique().tolist()
+
 
 @app.route('/')
 def index():
