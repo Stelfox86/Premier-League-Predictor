@@ -31,8 +31,40 @@ def get_recent_averages(team, is_home):
         games = history[history['AwayTeam'] == team].tail(RECENT_MATCHES)
     return [mean(games[col].fillna(0)) if col in games else 0 for col in stat_cols]
 def predict_winner(home, away):
-    import random
-    return random.choice(["Home Win 🏠", "Draw ⚖️", "Away Win 🚗"])
+    try:
+        # Get recent average stats
+        home_avg = get_recent_averages(home, is_home=True)
+        away_avg = get_recent_averages(away, is_home=False)
+
+        # Combine averages into one input row
+        features = home_avg + away_avg
+
+        # Encode team names
+        home_encoded = le_home.transform([home])[0]
+        away_encoded = le_away.transform([away])[0]
+
+        # Add encoded team names to features
+        features += [home_encoded, away_encoded]
+
+        # Match the column order expected by the model
+        columns = stat_cols + [f"home_team_encoded", f"away_team_encoded"]
+        input_df = pd.DataFrame([features], columns=columns)
+
+        # Make prediction
+        prediction = model.predict(input_df)[0]
+
+        # Translate prediction
+        if prediction == 'H':
+            return "Home Win 🏠"
+        elif prediction == 'A':
+            return "Away Win 🚗"
+        else:
+            return "Draw ⚖️"
+
+    except Exception as e:
+        logging.error(f"Prediction failed for {home} vs {away}: {e}")
+        return "Prediction Error ❌"
+
 def get_teams():
     import pandas as pd
     df = pd.read_csv('E0.csv')  # or your actual data file
