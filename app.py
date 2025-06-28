@@ -34,6 +34,7 @@ def get_recent_averages(team, is_home=True):
         return [0] * len(stat_cols)  # Prevents the "mean requires at least one data point" error
 
     return [games[col].fillna(0).mean() for col in stat_cols]
+    logging.info(f"Encoded teams: {list(le_home.classes_)}")
 
 def predict_winner(home, away):
     try:
