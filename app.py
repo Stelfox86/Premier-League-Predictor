@@ -32,9 +32,8 @@ def get_recent_averages(team, is_home=True):
 
     if games.empty:
         return [0] * len(stat_cols)  # Prevents the "mean requires at least one data point" error
-
-    return [games[col].fillna(0).mean() for col in stat_cols]
     logging.info(f"Encoded teams: {list(le_home.classes_)}")
+    return [games[col].fillna(0).mean() for col in stat_cols]
 
 def predict_winner(home, away):
     try:
@@ -58,7 +57,7 @@ def predict_winner(home, away):
         
 
         # Match the column order expected by the model
-        columns = stat_cols + ["home_team_encoded", "away_team_encoded"]
+        columns = stat_cols + ["HomeTeam", "AwayTeam"]
         input_df = pd.DataFrame([features], columns=columns)
 
         # Make prediction
@@ -99,36 +98,6 @@ def get_upcoming_fixtures():
         {"home": "Leeds United", "away": "Everton", "date": "2025-08-18"},
     ]
     return fixtures
-
-
-    fixtures = []
-
-    # Each day section
-    days = soup.find_all('div', class_='qa-match-block')
-
-    for day in days:
-        date_tag = day.find('h3')
-        date = date_tag.text.strip() if date_tag else "Upcoming"
-
-        games = day.find_all('li', class_='gs-o-list-ui__item')
-
-        for game in games:
-            teams = game.find_all('span', class_='gs-u-display-none gs-u-display-block@m qa-full-team-name')
-            if len(teams) == 2:
-                home = teams[0].text.strip()
-                away = teams[1].text.strip()
-                fixtures.append({
-                    "home": home,
-                    "away": away,
-                    "date": date
-                })
-
-    logging.info(f"Fixtures found: {len(fixtures)}")
-    return fixtures
-
-
-
-
 
 
 
