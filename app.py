@@ -42,13 +42,20 @@ from bs4 import BeautifulSoup
 import logging
 
 def get_upcoming_fixtures():
-    return [
-        {"home": "Manchester City", "away": "Arsenal", "date": "2025-08-10"},
-        {"home": "Chelsea", "away": "Liverpool", "date": "2025-08-11"},
-        {"home": "Tottenham", "away": "Man United", "date": "2025-08-12"},
-        {"home": "Everton", "away": "Aston Villa", "date": "2025-08-13"},
-        {"home": "Newcastle", "away": "Brighton", "date": "2025-08-14"}
+    # Manually defined upcoming fixtures - Matchweek 1
+    fixtures = [
+        {"home": "Liverpool", "away": "AFC Bournemouth", "date": "2025-08-15"},
+        {"home": "Aston Villa", "away": "Newcastle United", "date": "2025-08-16"},
+        {"home": "Brighton & Hove Albion", "away": "Fulham", "date": "2025-08-16"},
+        {"home": "Sunderland", "away": "West Ham United", "date": "2025-08-16"},
+        {"home": "Tottenham Hotspur", "away": "Burnley", "date": "2025-08-16"},
+        {"home": "Wolverhampton Wanderers", "away": "Manchester City", "date": "2025-08-16"},
+        {"home": "Chelsea", "away": "Crystal Palace", "date": "2025-08-17"},
+        {"home": "Nottingham Forest", "away": "Brentford", "date": "2025-08-17"},
+        {"home": "Manchester United", "away": "Arsenal", "date": "2025-08-17"},
+        {"home": "Leeds United", "away": "Everton", "date": "2025-08-18"},
     ]
+    return fixtures
 
 
     fixtures = []
