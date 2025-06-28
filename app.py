@@ -24,14 +24,23 @@ stat_cols = ['FTHG', 'FTAG', 'HTHG', 'HTAG',
              'HY', 'AY', 'HR', 'AR']
 RECENT_MATCHES = 8
 
-def get_recent_averages(team, is_home):
+def get_recent_averages(team, is_home=True):
     if is_home:
         games = history[history['HomeTeam'] == team].tail(RECENT_MATCHES)
     else:
         games = history[history['AwayTeam'] == team].tail(RECENT_MATCHES)
-    return [mean(games[col].fillna(0)) if col in games else 0 for col in stat_cols]
+
+    if games.empty:
+        return [0] * len(stat_cols)  # Prevents the "mean requires at least one data point" error
+
+    return [games[col].fillna(0).mean() for col in stat_cols]
+
 def predict_winner(home, away):
     try:
+        # Skip if the team is not recognized by the model
+        if home not in le_home.classes_ or away not in le_away.classes_:
+            return "Prediction Error ❌ (Unknown team)"
+
         # Get recent average stats
         home_avg = get_recent_averages(home, is_home=True)
         away_avg = get_recent_averages(away, is_home=False)
@@ -45,6 +54,7 @@ def predict_winner(home, away):
 
         # Add encoded team names to features
         features += [home_encoded, away_encoded]
+        
 
         # Match the column order expected by the model
         columns = stat_cols + [f"home_team_encoded", f"away_team_encoded"]
