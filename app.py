@@ -50,7 +50,7 @@ def predict_winner(home, away):
         away_encoded = le_away.transform([away])[0]  # 1
 
         # Build feature vector (34 total)
-        features = home_avg + away_avg + [home_encoded, away_encoded]
+        features += [home, away]
 
         # Match the column order expected by the model
         columns = stat_cols * 2 + ["HomeTeam", "AwayTeam"]
