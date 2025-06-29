@@ -35,32 +35,36 @@ def get_recent_averages(team, is_home=True):
     logging.info(f"Encoded teams: {list(le_home.classes_)}")
     return [games[col].fillna(0).mean() for col in stat_cols]
 
-def predict_winner(home, away):
+def predict_outcome(model, le_home, le_away, stat_cols, home, away, stats_dict):
     try:
-        # Skip if the team is not recognized by the model
-        if home not in le_home.classes_ or away not in le_away.classes_:
+        # 1. Gather statistical features for both teams
+        home_stats = stats_dict.get(home)
+        away_stats = stats_dict.get(away)
+
+        if home_stats is None or away_stats is None:
+            logging.error(f"Missing stats for {home} or {away}")
             return "Prediction Error ❌ (Unknown team)"
 
-        # Get recent average stats
-        home_avg = get_recent_averages(home, is_home=True)   # 16 stats
-        away_avg = get_recent_averages(away, is_home=False)  # 16 stats
+        # 2. Combine stats
+        features = home_stats + away_stats  # 32 features total
 
-        # Encode team names
-        home_encoded = le_home.transform([home])[0]  # 1
-        away_encoded = le_away.transform([away])[0]  # 1
-    
-        # Build feature vector (34 total)
-        features = []
-        features += [home, away]
+        # 3. Encode team names as numerical values
+        home_encoded = le_home.transform([home])[0]
+        away_encoded = le_away.transform([away])[0]
 
-        # Match the column order expected by the model
-        columns = stat_cols * 2 + ["HomeTeam", "AwayTeam"]
+        # 4. Append encoded team names to the feature vector
+        features += [home_encoded, away_encoded]  # Now 34 features total
+
+        # 5. Match the expected column order from training
+        columns = stat_cols + ["home_team_encoded", "away_team_encoded"]
+
+        # 6. Create input dataframe
         input_df = pd.DataFrame([features], columns=columns)
 
-        # Make prediction
+        # 7. Make prediction
         prediction = model.predict(input_df)[0]
 
-        # Translate prediction
+        # 8. Translate result
         if prediction == 'H':
             return "Home Win 🏠"
         elif prediction == 'A':
@@ -71,6 +75,7 @@ def predict_winner(home, away):
     except Exception as e:
         logging.error(f"Prediction failed for {home} vs {away}: {e}")
         return "Prediction Error ❌"
+
 
 
 def get_teams():
