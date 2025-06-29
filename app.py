@@ -141,23 +141,35 @@ def predict_winner(home, away):
         return "Prediction Error ❌"
 
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    predictions = []
+@app.route('/predict', methods=['POST'])
+def predict():
+    try:
+        home_team = request.form['home_team']
+        away_team = request.form['away_team']
 
-    if request.method == 'POST':
-        fixtures = get_upcoming_fixtures()
-        logging.info(f"Fixtures pulled: {fixtures}")
-        for match in fixtures:
-            outcome = predict_winner(match['home'], match['away'])
-            predictions.append({
-                "home": match['home'],
-                "away": match['away'],
-                "outcome": outcome,
-                "date": match['date']
-            })
+        # Get recent averages
+        home_stats = get_recent_averages(home_team, is_home=True)
+        away_stats = get_recent_averages(away_team, is_home=False)
 
-    return render_template('index.html', predictions=predictions)
+        # Encode teams
+        home_encoded = le_home.transform([home_team])[0]
+        away_encoded = le_away.transform([away_team])[0]
+
+        # Combine features
+        features = home_stats + away_stats + [home_encoded, away_encoded]
+        columns = stat_cols + stat_cols + ['home_team_encoded', 'away_team_encoded']
+        input_df = pd.DataFrame([features], columns=columns)
+
+        prediction = model.predict(input_df)[0]
+        outcome_map = {0: 'Home Win 🏠', 1: 'Draw ⚖️', 2: 'Away Win 🚗'}
+        result = outcome_map[prediction]
+
+        return render_template('result.html', prediction=result)
+
+    except Exception as e:
+        logging.error(f"Prediction error: {e}")
+        return f"❌ Error: {e}"
+
 
 
 if __name__ == '__main__':
