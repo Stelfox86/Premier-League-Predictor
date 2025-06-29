@@ -14,9 +14,9 @@ API_KEY = os.getenv("API_FOOTBALL_KEY")
 stat_cols = 16  # or however many your model expects
 
 # Load model + encoders
-model = joblib.load('model.pkl')
-le_home = joblib.load('le_home.pkl')
-le_away = joblib.load('le_away.pkl')
+model = joblib.load('model/model.pkl')
+le_home = joblib.load('model/le_home.pkl')
+le_away = joblib.load('model/le_away.pkl')
 
 # Now that le_home is defined, this will work ✅
 team_stats = {team: [0] * stat_cols for team in le_home.classes_}
