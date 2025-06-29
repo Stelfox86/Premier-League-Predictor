@@ -42,23 +42,18 @@ def predict_winner(home, away):
             return "Prediction Error ❌ (Unknown team)"
 
         # Get recent average stats
-        home_avg = get_recent_averages(home, is_home=True)
-        away_avg = get_recent_averages(away, is_home=False)
-
-        # Combine averages into one input row
-        features = home_avg + away_avg
+        home_avg = get_recent_averages(home, is_home=True)   # 16 stats
+        away_avg = get_recent_averages(away, is_home=False)  # 16 stats
 
         # Encode team names
-        home_encoded = le_home.transform([home])[0]
-        away_encoded = le_away.transform([away])[0]
+        home_encoded = le_home.transform([home])[0]  # 1
+        away_encoded = le_away.transform([away])[0]  # 1
 
-        # Add encoded team names to features
-        features += [home_encoded, away_encoded]
-        
+        # Build feature vector (34 total)
+        features = home_avg + away_avg + [home_encoded, away_encoded]
 
         # Match the column order expected by the model
-        columns = stat_cols + ["home_team_encoded", "away_team_encoded"]
-
+        columns = stat_cols * 2 + ["home_team_encoded", "away_team_encoded"]
         input_df = pd.DataFrame([features], columns=columns)
 
         # Make prediction
@@ -75,6 +70,7 @@ def predict_winner(home, away):
     except Exception as e:
         logging.error(f"Prediction failed for {home} vs {away}: {e}")
         return "Prediction Error ❌"
+
 
 def get_teams():
     import pandas as pd
