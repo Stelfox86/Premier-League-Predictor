@@ -94,6 +94,7 @@ def get_upcoming_fixtures():
     {"home": "Manchester United", "away": "Arsenal", "date": "2025-08-17"},
     {"home": "Leeds United", "away": "Everton", "date": "2025-08-18"},
 ]
+    return fixtures
 
 
 
