@@ -53,7 +53,7 @@ def predict_winner(home, away):
         features = home_avg + away_avg + [home_encoded, away_encoded]
 
         # Match the column order expected by the model
-        columns = stat_cols * 2 + ["home_team_encoded", "away_team_encoded"]
+        columns = stat_cols * 2 + ["HomeTeam", "AwayTeam"]
         input_df = pd.DataFrame([features], columns=columns)
 
         # Make prediction
