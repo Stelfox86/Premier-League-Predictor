@@ -102,9 +102,27 @@ def get_upcoming_fixtures():
 ]
     return fixtures
 
+def predict_winner(home, away):
+    try:
+        # Encode teams
+        home_encoded = le_home.transform([home])[0]
+        away_encoded = le_away.transform([away])[0]
 
+        # Build feature vector
+        home_stats = team_stats.get(home, [0] * stat_cols)
+        away_stats = team_stats.get(away, [0] * stat_cols)
+        features = home_stats + [home_encoded] + away_stats + [away_encoded]
 
+        # Create input DataFrame
+        input_df = pd.DataFrame([features], columns=expected_columns)
 
+        # Predict outcome
+        prediction = model.predict(input_df)[0]
+        return prediction
+
+    except Exception as e:
+        logging.error(f"Prediction failed for {home} vs {away}: {e}")
+        return "Prediction Error ❌"
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -112,11 +130,8 @@ def index():
     predictions = []
 
     if request.method == 'POST':
-        logging.info("POST request received 🚀 calling fixture API")
-
         fixtures = get_upcoming_fixtures()
         logging.info(f"Fixtures pulled: {fixtures}")
-
         for match in fixtures:
             outcome = predict_winner(match['home'], match['away'])
             predictions.append({
@@ -127,6 +142,7 @@ def index():
             })
 
     return render_template('index.html', predictions=predictions)
+
 
 if __name__ == '__main__':
     import os
