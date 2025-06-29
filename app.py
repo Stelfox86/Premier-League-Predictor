@@ -48,8 +48,9 @@ def predict_winner(home, away):
         # Encode team names
         home_encoded = le_home.transform([home])[0]  # 1
         away_encoded = le_away.transform([away])[0]  # 1
-
+    
         # Build feature vector (34 total)
+        features = []
         features += [home, away]
 
         # Match the column order expected by the model
