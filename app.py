@@ -1,13 +1,25 @@
 import logging
-import os # ✅ os module imported for Render deploy
+import os  # ✅ os module imported for Render deploy
 from flask import Flask, render_template, request
 import pandas as pd
 import joblib
 from statistics import mean
+
 predictions = []
 logging.basicConfig(level=logging.INFO)
+
 API_KEY = os.getenv("API_FOOTBALL_KEY")
 
+# Dummy team stats setup
+stat_cols = 16  # or however many your model expects
+
+# Load model + encoders
+model = joblib.load('model.pkl')
+le_home = joblib.load('le_home.pkl')
+le_away = joblib.load('le_away.pkl')
+
+# Now that le_home is defined, this will work ✅
+team_stats = {team: [0] * stat_cols for team in le_home.classes_}
 
 app = Flask(__name__)
 
@@ -103,6 +115,10 @@ def get_upcoming_fixtures():
     return fixtures
 
 def predict_winner(home, away):
+    if home not in le_home.classes_ or away not in le_away.classes_:
+        logging.warning(f"Skipping unseen team: {home} or {away}")
+    return "Unknown Team ⚠️"
+
     try:
         # Encode teams
         home_encoded = le_home.transform([home])[0]
